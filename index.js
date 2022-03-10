@@ -8,12 +8,21 @@ async function main() {
   //     name: "Home"
   //   }
   // })
-  const newTodo = await prisma.todo.create({
-    data: {
-      title: "Buy soda 2",
-      projectId: 5
-    },
+  // const newTodo = await prisma.todo.create({
+  //   data: {
+  //     title: "Test todo",
+  //   },
+  // });
+  // console.log(newTodo)
+  const todo = await prisma.todo.findUnique({
+    where: {
+      id: 24
+    }
   });
+  console.log(todo.createdAt)
+  console.log(new Date(todo.createdAt).toLocaleDateString('en-CA'))
+  console.log(todo.updatedAt)
+  console.log(new Date(todo.updatedAt).toLocaleDateString())
 }
 
 main()
