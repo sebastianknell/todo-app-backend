@@ -4,7 +4,7 @@ const { PrismaClient } = require("@prisma/client");
 
 const app = express();
 const prisma = new PrismaClient();
-const port = 8000;
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -129,6 +129,6 @@ app.delete("/todo/delete", async (req, res) => {
   res.status(200).send();
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log(`Server listening on port ${port}`);
 });
