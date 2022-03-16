@@ -129,6 +129,7 @@ app.delete("/todo/delete", async (req, res) => {
   res.status(200).send();
 });
 
-app.listen(process.env.PORT || 5000, () => {
+let port = process.env.PORT || 5000;
+app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
