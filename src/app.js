@@ -48,6 +48,8 @@ app.post("/todo/add", async (req, res) => {
     newTodo = await prisma.todo.create({
       data: {
         ...todo,
+        date: todo.date ? new Date(todo.date) : null,
+        deadline: todo.deadline ? new Date(todo.deadline) : null,
       },
     });
   } catch (e) {
