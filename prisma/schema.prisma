@@ -18,7 +18,10 @@ model Todo {
   someday Boolean @default(false)
   deadline  DateTime?
   completed Boolean @default(false)
+  completedAt DateTime?
   inbox Boolean @default(true)
+  trash Boolean @default(false)
+  logged Boolean @default(false)
   project Project? @relation(fields: [projectId], references: [id])
   projectId Int?
   createdAt DateTime @default(now())

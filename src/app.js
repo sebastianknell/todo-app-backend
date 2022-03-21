@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 app.get("/todo/all", async (req, res) => {
   const todos = await prisma.todo.findMany({
     where: {
-      completed: false,
+      logged: false,
     },
     orderBy: {
       createdAt: "asc",
@@ -28,10 +28,22 @@ app.get("/todo/all", async (req, res) => {
 app.get("/todo/completed", async (req, res) => {
   const todos = await prisma.todo.findMany({
     where: {
-      completed: true,
+      logged: true,
     },
     orderBy: {
-      createdAt: "asc",
+      completedAt: "asc",
+    },
+  });
+  res.json(todos);
+});
+
+app.get("/todo/deleted", async (req, res) => {
+  const todos = await prisma.todo.findMany({
+    where: {
+      trash: true,
+    },
+    orderBy: {
+      updatedAt: "asc",
     },
   });
   res.json(todos);
@@ -74,6 +86,8 @@ app.put("/todo/complete", async (req, res) => {
       },
       data: {
         completed: completed,
+        logged: !completed ? true : false,
+        completedAt: completed ? new Date() : null
       },
     });
   } catch (e) {
@@ -93,7 +107,6 @@ app.put("/todo/update", async (req, res) => {
   const todoId = todo.id;
   delete todo.id;
   let updatedTodo;
-  // TODO update only changed fields
   try {
     updatedTodo = await prisma.todo.update({
       where: {
@@ -112,17 +125,38 @@ app.put("/todo/update", async (req, res) => {
   res.json({ updatedTodo });
 });
 
-app.delete("/todo/delete", async (req, res) => {
+app.put("/todo/log", async (req, res) => {
+  try {
+    await prisma.todo.updateMany({
+      where: {
+        completed: true,
+        logged: false,
+      },
+      data: {
+        logged: true
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ error: "Couldn't log todos" });
+  }
+  res.status(200).send();
+})
+
+app.put("/todo/delete", async (req, res) => {
   const id = req.body.id;
   if (!id) {
     res.status(400).json({ error: "Invalid request body" });
     return;
   }
   try {
-    await prisma.todo.delete({
+    await prisma.todo.update({
       where: {
         id: Number(id),
       },
+      data: {
+        trash: true,
+      }
     });
   } catch (e) {
     console.log(e);
@@ -130,6 +164,20 @@ app.delete("/todo/delete", async (req, res) => {
   }
   res.status(200).send();
 });
+
+app.delete("/todo/empty", async (req, res) => {
+  try {
+    await prisma.todo.deleteMany({
+      where: {
+        trash: true,
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ error: "Couldn't empty trash" });
+  }
+  res.status(200).send();
+})
 
 let port = process.env.PORT || 5000;
 app.listen(port, () => {
