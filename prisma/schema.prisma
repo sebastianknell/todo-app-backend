@@ -36,6 +36,9 @@ model Project {
   someday Boolean @default(false)
   deadline  DateTime?
   completed Boolean @default(false)
+  completedAt DateTime?
+  trash Boolean @default(false)
+  logged Boolean @default(false)
   todos Todo[]
   area  Area? @relation(fields: [areaId], references: [id])
   areaId  Int?
