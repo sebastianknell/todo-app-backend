@@ -3,26 +3,19 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  // const newProject = await prisma.project.create({
-  //   data: {
-  //     name: "Home"
+  // const area = await prisma.area.findUnique({
+  //   where: {
+  //     id: 1
+  //   },
+  //   include: {
+  //     projects: true,
   //   }
   // })
-  // const newTodo = await prisma.todo.create({
-  //   data: {
-  //     title: "Test todo",
-  //   },
-  // });
-  // console.log(newTodo)
-  const todo = await prisma.todo.findUnique({
-    where: {
-      id: 24
-    }
-  });
-  console.log(todo.createdAt)
-  console.log(new Date(todo.createdAt).toLocaleDateString('en-CA'))
-  console.log(todo.updatedAt)
-  console.log(new Date(todo.updatedAt).toLocaleDateString())
+  // console.log(area)
+  const areas = await prisma.area.findMany();
+  console.log(areas);
+  const projects = await prisma.project.findMany();
+  console.log(projects)
 }
 
 main()

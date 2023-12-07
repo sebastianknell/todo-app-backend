@@ -43,7 +43,7 @@ app.put("/log", async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.status(400).json({ error: "Couldn't log items" });
+    res.status(500).json({ error: "Couldn't log items" });
   }
   res.status(200).send();
 });
@@ -82,10 +82,25 @@ app.delete("/empty", async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.status(400).json({ error: "Couldn't empty trash" });
+    res.status(500).json({ error: "Couldn't empty trash" });
   }
   res.status(200).send();
 });
+
+// prueba software 2
+app.get("/keepalive", (req, res) => {
+  res.status(200).send();
+})
+
+app.get("/keepalive_db", async (req, res) => {
+  try {
+    await prisma.area.findFirst();
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: "Database did not respond" });
+  }
+  res.status(200).send();
+})
 
 let port = process.env.PORT || 5000;
 app.listen(port, () => {
